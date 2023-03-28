@@ -10,16 +10,6 @@ data class JsonResponse (
     @SerializedName("errorMessage" ) var errorMessage : String?            = null
 
 )
-
-
-//data class Film(
-//    val id: String?,
-//    val resultType: String?,
-//    val image :String?,
-//    val title: String?,
-//    val description: String?) {
-//}
-
 data class Film (
 
     @SerializedName("id"          ) var id          : String? = null,

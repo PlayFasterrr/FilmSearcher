@@ -7,14 +7,14 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface FilmApi {
-    @GET ("en/API/SearchMovie/k_d7x2gnsg/{expression}")
+    @GET("en/API/SearchMovie/k_d7x2gnsg/{expression}")
     suspend fun getFilms(
-        @Path("expression") expression : String
-    ) : JsonResponse
+        @Path("expression") expression: String
+    ): JsonResponse
 
     companion object Factory {
 
-        fun create(): FilmApi{
+        fun create(): FilmApi {
             val retrofit = retrofit2.Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
