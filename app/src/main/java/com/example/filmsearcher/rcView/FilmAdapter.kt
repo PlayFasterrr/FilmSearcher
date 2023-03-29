@@ -21,7 +21,8 @@ class FilmAdapter(private val filmsToAdd: ArrayList<Film>) :
             binding.apply {
                 tvFilmTitle.text = film.title
                 tvFilmDescription.text = film.description
-                if(film.image == "" || film.image == null) film.image = R.drawable.ic_launcher_foreground.toString()
+                if (film.image == "" || film.image == null) film.image =
+                    R.drawable.ic_launcher_foreground.toString()
                 Picasso
                     .get()
                     .load(film.image)
