@@ -1,8 +1,8 @@
-package com.example.filmsearcher.dataClass
+package com.example.filmsearcher.domain.models
 
 import com.google.gson.annotations.SerializedName
 
-data class JsonResponse(
+data class SearchResponse(
 
     @SerializedName("searchType") var searchType: String? = null,
     @SerializedName("expression") var expression: String? = null,

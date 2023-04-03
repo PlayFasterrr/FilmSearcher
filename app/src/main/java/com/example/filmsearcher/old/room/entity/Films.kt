@@ -1,4 +1,4 @@
-package com.example.filmsearcher.room.entity
+package com.example.filmsearcher.old.room.entity
 
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
