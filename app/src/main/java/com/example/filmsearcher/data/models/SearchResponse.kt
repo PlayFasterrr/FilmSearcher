@@ -1,6 +1,6 @@
-package com.example.filmsearcher.domain.models
+package com.example.filmsearcher.data.models
 
-import com.example.filmsearcher.old.room.entity.FilmsDB
+import com.example.filmsearcher.data.room.entity.FilmDB
 import com.google.gson.annotations.SerializedName
 
 data class SearchResponse(
@@ -20,11 +20,4 @@ data class Film(
     @SerializedName("title") var title: String? = null,
     @SerializedName("description") var description: String? = null
 
-) {
-//    fun fromEntity(): FilmsDB {
-//        return FilmsDB(
-//            id = this.id,
-//            resultType = this.resultType
-//        )
-//    }
-}
+)

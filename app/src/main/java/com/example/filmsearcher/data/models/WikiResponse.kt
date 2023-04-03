@@ -1,4 +1,4 @@
-package com.example.filmsearcher.domain.models
+package com.example.filmsearcher.data.models
 
 import com.google.gson.annotations.SerializedName
 

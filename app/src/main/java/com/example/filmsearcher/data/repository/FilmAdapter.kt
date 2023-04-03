@@ -1,4 +1,4 @@
-package com.example.filmsearcher.old.rcView
+package com.example.filmsearcher.data.repository
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,11 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.filmsearcher.R
 import com.example.filmsearcher.databinding.FilmCardBinding
-import com.example.filmsearcher.domain.models.Film
+import com.example.filmsearcher.data.models.Film
+import com.example.filmsearcher.domain.repository.FilmClicker
 import com.squareup.picasso.Picasso
 
 class FilmAdapter(
-    private val filmsToAdd: ArrayList<Film>,
+    private val filmsToAdd: List<Film>?,
     private val filmClicker: FilmClicker
 ) :
     RecyclerView.Adapter<FilmAdapter.FilmHolder>() {
@@ -46,11 +47,11 @@ class FilmAdapter(
     }
 
     override fun getItemCount(): Int {
-        return filmsToAdd.size
+        return filmsToAdd?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: FilmHolder, position: Int) {
-        val film: Film = filmsToAdd[position]
+        val film: Film = filmsToAdd?.get(position) ?: Film()
         holder.bind(film, filmClicker)
     }
 }

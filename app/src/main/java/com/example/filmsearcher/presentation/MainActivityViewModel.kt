@@ -3,34 +3,39 @@ package com.example.filmsearcher.presentation
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.filmsearcher.domain.models.Film
+import com.example.filmsearcher.data.models.Film
+import com.example.filmsearcher.data.repository.FilmSearcherRepositoryImpl
 import com.example.filmsearcher.domain.repository.FilmSearcherRepository
-import com.example.filmsearcher.domain.usecase.GetFilms
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
-import kotlin.math.exp
 
 class MainActivityViewModel(
-    val filmsRepo: FilmSearcherRepository
-): ViewModel() {
+    private val filmsRepo: FilmSearcherRepository,
+    ): ViewModel() {
 
-    val filmsListLiveData = MutableLiveData<List<Film>>()
-    val apiErrorLiveData = MutableLiveData<String>()
+
+    var filmsListLiveData = MutableLiveData<List<Film?>>()
+
+    private val apiErrorLiveData = MutableLiveData<String?>()
 
     fun getFilms(expression: String) {
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = filmsRepo.getFilms(expression)
+                val response = filmsRepo.getFilmsFromAPI(expression)
                 if(response.isSuccessful) {
                     filmsListLiveData.postValue(response.body()?.results)
+
                 }
             } catch (e: UnknownHostException) {
                 apiErrorLiveData.postValue("Check your connection!")
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 apiErrorLiveData.postValue("Something went wrong!")
             }
         }
     }
+
+
 
 }

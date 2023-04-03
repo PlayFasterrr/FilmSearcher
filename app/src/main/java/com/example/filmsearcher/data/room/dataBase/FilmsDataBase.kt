@@ -1,27 +1,27 @@
-package com.example.filmsearcher.old.room.dataBase
+package com.example.filmsearcher.data.room.dataBase
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.filmsearcher.data.repository.dataBase.MovieDao
-import com.example.filmsearcher.old.room.entity.FilmsDB
+import com.example.filmsearcher.data.room.dao.FilmsDao
+import com.example.filmsearcher.data.room.entity.FilmDB
 
-@Database(version = 1, entities = [FilmsDB::class], exportSchema = false)
-abstract class MovieDB : RoomDatabase() {
-    abstract fun movieDao(): MovieDao
+@Database(version = 1, entities = [FilmDB::class], exportSchema = false)
+abstract class FilmsDataBase : RoomDatabase() {
+    abstract fun movieDao(): FilmsDao
 
     companion object {
         @Volatile
-        private var INSTANCE: MovieDB? = null
+        private var INSTANCE: FilmsDataBase? = null
 
-        fun getDB(context: Context): MovieDB {
+        fun getDB(context: Context): FilmsDataBase {
             val tempInstance = INSTANCE
             if (tempInstance != null) return tempInstance
             synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    MovieDB::class.java,
+                    FilmsDataBase::class.java,
                     "movie_db"
                 )
                     .build()

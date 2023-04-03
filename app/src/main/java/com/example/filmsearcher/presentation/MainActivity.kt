@@ -5,90 +5,68 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.filmsearcher.data.repository.FilmSearcherApiService
-import com.example.filmsearcher.data.repository.FromDBEntityImpl
-import com.example.filmsearcher.data.repository.ToDBEntityImpl
+import com.example.filmsearcher.data.models.Film
+import com.example.filmsearcher.data.repository.FilmAdapter
+import com.example.filmsearcher.data.repository.FilmSearcherRepositoryImpl
+import com.example.filmsearcher.data.room.dataBase.FilmsDataBase.Companion.getDB
 import com.example.filmsearcher.databinding.ActivityMainBinding
-import com.example.filmsearcher.domain.models.Film
-import com.example.filmsearcher.domain.repository.FilmSearcherRepositoryImpl
-import com.example.filmsearcher.domain.usecase.FromDBEntity
-import com.example.filmsearcher.domain.usecase.GetFilms
-import com.example.filmsearcher.domain.usecase.ToDBEntity
-import com.example.filmsearcher.old.rcView.FilmAdapter
-import com.example.filmsearcher.old.rcView.FilmClicker
-import com.example.filmsearcher.old.room.dataBase.MovieDB.Companion.getDB
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.example.filmsearcher.domain.repository.FilmClicker
+import com.example.filmsearcher.domain.repository.FilmSearcherApiService
 
 class MainActivity : AppCompatActivity(), FilmClicker {
 
     private lateinit var binding: ActivityMainBinding
-    private var listOfFilms: ArrayList<Film> = arrayListOf()
+    private var listOfFilms: List<Film>? = listOf()
     private var adapter = FilmAdapter(listOfFilms, this)
-
-    private val converterToDB = ToDBEntityImpl()
-    private val toDBEntity = ToDBEntity(converterToDB)
-
-    private val converterFromDB = FromDBEntityImpl()
-    private val fromDBEntity = FromDBEntity(converterFromDB)
-
-//    private val viewModel = MainActivityViewModel(
-//        FilmSearcherRepositoryImpl(
-//            FilmSearcherApiService()
-//        )
-//    )
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         val myDB = getDB(this)
-        init()
-//        viewModel.apiErrorLiveData.observe(this, Observer {
-//
-//        })
-//
-//        viewModel.filmsListLiveData.observe(this, Observer {
-//
-//        })
+
+        val viewModel = MainActivityViewModel(
+        FilmSearcherRepositoryImpl(
+            FilmSearcherApiService.create(),
+            myDB.movieDao()
+            )
+        )
+        Log.d("LOGGA" , listOfFilms.toString())
+        viewModel.filmsListLiveData.observe(this){listOfFilms}
+
+        Log.d("LOGGA" , listOfFilms.toString())
 
 
-//         получить из базы список фильмов, конвертировать и отрисовать
-//        CoroutineScope(Dispatchers.IO).launch {
-//            listOfFilms = fromDBEntity.execute(myDB.movieDao().getLastMovies())
-//            runOnUiThread {
-//            init()
-//
-//            }
 
-
-        // сделать запрос в апишку, сгенерировать список
-        // очистить БД, конвертировать новый список и записать его в БД
-        // отрисовать по новому запросу
-        binding.bSeacrh.setOnClickListener() {
-            CoroutineScope(Dispatchers.IO).launch {
-
-                val response = getFilmsCase.execute("${binding.etSearch.text}")
-                listOfFilms.clear()
-                for (i in response.results) listOfFilms.add(i)
-                myDB.movieDao().deleteAll()  //deleteAll.execute(myDB)
-                myDB.movieDao()
-                    .insertAllMovies(toDBEntity.execute(listOfFilms)) //insertAll.execute(myDB)
-
-            }
-
-//            runOnUiThread {
-//                init()
-//                // это тоже перенести
-//            }
-
+        binding.bSeacrh.setOnClickListener{
+            viewModel.getFilms(binding.etSearch.text.toString())
+            Log.d("LOGGA" , listOfFilms.toString())
         }
+
+        Log.d("LOGGA" , listOfFilms.toString())
+        init()
+        Log.d("LOGGA" , listOfFilms.toString())
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //        val isConnectedToInternet = isInternetConnected(applicationContext)
@@ -113,16 +91,15 @@ class MainActivity : AppCompatActivity(), FilmClicker {
         }
     }
 
+    override fun clickFilm(film: Film) {
+                val intent = Intent(this, WikiActivity::class.java)
+        intent.putExtra("id", film.id).putExtra("image", film.image)
+        startActivity(intent)
+    }
     private fun isInternetConnected(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
         return (activeNetworkInfo != null) && activeNetworkInfo.isConnected
-    }
-
-    override fun clickFilm(film: Film) {
-        val intent = Intent(this, WikiActivity::class.java)
-        intent.putExtra("id", film.id).putExtra("image", film.image)
-        startActivity(intent)
     }
 }

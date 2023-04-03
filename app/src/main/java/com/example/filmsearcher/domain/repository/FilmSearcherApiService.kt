@@ -1,7 +1,7 @@
-package com.example.filmsearcher.data.repository
+package com.example.filmsearcher.domain.repository
 
-import com.example.filmsearcher.domain.models.SearchResponse
-import com.example.filmsearcher.domain.models.WikiResponse
+import com.example.filmsearcher.data.models.SearchResponse
+import com.example.filmsearcher.data.models.WikiResponse
 import retrofit2.Response
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
