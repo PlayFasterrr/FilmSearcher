@@ -6,20 +6,19 @@ import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.filmsearcher.data.repository.FilmApiImpl
+import com.example.filmsearcher.data.repository.FilmSearcherApiService
 import com.example.filmsearcher.data.repository.FromDBEntityImpl
 import com.example.filmsearcher.data.repository.ToDBEntityImpl
-import com.example.filmsearcher.data.repository.dataBase.MovieDao
-import com.example.filmsearcher.data.repository.dataBase.MovieDao_Impl
 import com.example.filmsearcher.databinding.ActivityMainBinding
 import com.example.filmsearcher.domain.models.Film
+import com.example.filmsearcher.domain.repository.FilmSearcherRepositoryImpl
 import com.example.filmsearcher.domain.usecase.FromDBEntity
 import com.example.filmsearcher.domain.usecase.GetFilms
 import com.example.filmsearcher.domain.usecase.ToDBEntity
 import com.example.filmsearcher.old.rcView.FilmAdapter
 import com.example.filmsearcher.old.rcView.FilmClicker
-import com.example.filmsearcher.old.room.dataBase.MovieDB
 import com.example.filmsearcher.old.room.dataBase.MovieDB.Companion.getDB
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,15 +30,17 @@ class MainActivity : AppCompatActivity(), FilmClicker {
     private var listOfFilms: ArrayList<Film> = arrayListOf()
     private var adapter = FilmAdapter(listOfFilms, this)
 
-
-    private val filmApiImpl = FilmApiImpl.create()
-    private val getFilmsCase = GetFilms(filmApiImpl)
-
     private val converterToDB = ToDBEntityImpl()
     private val toDBEntity = ToDBEntity(converterToDB)
 
     private val converterFromDB = FromDBEntityImpl()
     private val fromDBEntity = FromDBEntity(converterFromDB)
+
+//    private val viewModel = MainActivityViewModel(
+//        FilmSearcherRepositoryImpl(
+//            FilmSearcherApiService()
+//        )
+//    )
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +48,14 @@ class MainActivity : AppCompatActivity(), FilmClicker {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val myDB = getDB(this)
+        init()
+//        viewModel.apiErrorLiveData.observe(this, Observer {
+//
+//        })
+//
+//        viewModel.filmsListLiveData.observe(this, Observer {
+//
+//        })
 
 
 //         получить из базы список фильмов, конвертировать и отрисовать
@@ -73,10 +82,10 @@ class MainActivity : AppCompatActivity(), FilmClicker {
 
             }
 
-            runOnUiThread {
-                init()
-                // это тоже перенести
-            }
+//            runOnUiThread {
+//                init()
+//                // это тоже перенести
+//            }
 
         }
     }
@@ -97,6 +106,7 @@ class MainActivity : AppCompatActivity(), FilmClicker {
 
 
     private fun init() {
+        isInternetConnected(context = this)
         binding.apply {
             rcView.layoutManager = LinearLayoutManager(this@MainActivity)
             rcView.adapter = adapter
