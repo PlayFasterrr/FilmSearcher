@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), FilmClicker {
 
     private lateinit var binding: ActivityMainBinding
     private var listOfFilms: List<Film>? = listOf()
-    private var adapter = FilmAdapter(listOfFilms, this)
+    private var adapter = FilmAdapter(this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,66 +36,23 @@ class MainActivity : AppCompatActivity(), FilmClicker {
             )
         )
 
-
+        init()
         viewModel.filmsListLiveData.observe(this, androidx.lifecycle.Observer<List<Film>?>{
-            listOfFilms = it})
-
-        Log.d("LOGGA", "after observe$listOfFilms")
-
-
-
-
+            adapter.updateList(it)
+        })
 
         binding.bSeacrh.setOnClickListener{
             viewModel.getFilms(binding.etSearch.text.toString())
             Log.d("LOGGA", " after click$listOfFilms")
-            init()
         }
-
-
-
-
-
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//        val isConnectedToInternet = isInternetConnected(applicationContext)
-//        if (isConnectedToInternet) {
-//            CoroutineScope(Dispatchers.IO).launch{
-//                myDB.movieDao().deleteAll()
-//            }
-//        } else {
-//            CoroutineScope(Dispatchers.IO).launch {
-//                listOfFilms = fromEntity(myDB.movieDao().getLastMovies())
-//                adapter = FilmAdapter(listOfFilms, this@MainActivity)
-//                init()
-//            }
-//        }
-
-
     private fun init() {
-//        isInternetConnected(context = this)
-        binding.apply {
-            rcView.layoutManager = LinearLayoutManager(this@MainActivity)
-            rcView.adapter = adapter
-        }
+        binding.rcView.adapter = adapter
     }
 
     override fun clickFilm(film: Film) {
-                val intent = Intent(this, WikiActivity::class.java)
+        val intent = Intent(this, WikiActivity::class.java)
         intent.putExtra("id", film.id).putExtra("image", film.image)
         startActivity(intent)
     }

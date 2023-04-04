@@ -12,10 +12,10 @@ import com.example.filmsearcher.domain.repository.FilmClicker
 import com.squareup.picasso.Picasso
 
 class FilmAdapter(
-    private val filmsToAdd: List<Film>?,
     private val filmClicker: FilmClicker
-) :
-    RecyclerView.Adapter<FilmAdapter.FilmHolder>() {
+) : RecyclerView.Adapter<FilmAdapter.FilmHolder>() {
+
+    private var filmsToAdd: List<Film>? = listOf()
 
     class FilmHolder(itemView: View) : ViewHolder(itemView) {
         private val binding = FilmCardBinding.bind(itemView)
@@ -53,5 +53,10 @@ class FilmAdapter(
     override fun onBindViewHolder(holder: FilmHolder, position: Int) {
         val film: Film = filmsToAdd?.get(position) ?: Film()
         holder.bind(film, filmClicker)
+    }
+
+    fun updateList(filmsList: List<Film>?) {
+        filmsToAdd = filmsList
+        notifyDataSetChanged()
     }
 }
