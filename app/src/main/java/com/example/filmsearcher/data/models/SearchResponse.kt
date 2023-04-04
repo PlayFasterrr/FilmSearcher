@@ -7,7 +7,7 @@ data class SearchResponse(
 
     @SerializedName("searchType") var searchType: String? = null,
     @SerializedName("expression") var expression: String? = null,
-    @SerializedName("results") var results: List<Film> = listOf(),
+    @SerializedName("results") var results: List<Film>? = listOf(),
     @SerializedName("errorMessage") var errorMessage: String? = null
 
 )

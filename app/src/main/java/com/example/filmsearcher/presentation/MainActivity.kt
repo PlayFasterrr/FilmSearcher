@@ -7,7 +7,6 @@ import android.net.NetworkInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.filmsearcher.data.models.Film
 import com.example.filmsearcher.data.repository.FilmAdapter
@@ -23,34 +22,38 @@ class MainActivity : AppCompatActivity(), FilmClicker {
     private var listOfFilms: List<Film>? = listOf()
     private var adapter = FilmAdapter(listOfFilms, this)
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val myDB = getDB(this@MainActivity)
 
-        val myDB = getDB(this)
-
-        val viewModel = MainActivityViewModel(
-        FilmSearcherRepositoryImpl(
-            FilmSearcherApiService.create(),
-            myDB.movieDao()
+        val viewModel = MainActivityViewModel (
+            FilmSearcherRepositoryImpl(
+                FilmSearcherApiService.create(),
+                myDB.movieDao()
             )
         )
-        Log.d("LOGGA" , listOfFilms.toString())
-        viewModel.filmsListLiveData.observe(this){listOfFilms}
 
-        Log.d("LOGGA" , listOfFilms.toString())
+
+        viewModel.filmsListLiveData.observe(this, androidx.lifecycle.Observer<List<Film>?>{
+            listOfFilms = it})
+
+        Log.d("LOGGA", "after observe$listOfFilms")
+
+
 
 
 
         binding.bSeacrh.setOnClickListener{
             viewModel.getFilms(binding.etSearch.text.toString())
-            Log.d("LOGGA" , listOfFilms.toString())
+            Log.d("LOGGA", " after click$listOfFilms")
+            init()
         }
 
-        Log.d("LOGGA" , listOfFilms.toString())
-        init()
-        Log.d("LOGGA" , listOfFilms.toString())
+
+
 
 
     }
@@ -84,7 +87,7 @@ class MainActivity : AppCompatActivity(), FilmClicker {
 
 
     private fun init() {
-        isInternetConnected(context = this)
+//        isInternetConnected(context = this)
         binding.apply {
             rcView.layoutManager = LinearLayoutManager(this@MainActivity)
             rcView.adapter = adapter

@@ -1,5 +1,6 @@
 package com.example.filmsearcher.presentation
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,11 +12,12 @@ import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 
 class MainActivityViewModel(
-    private val filmsRepo: FilmSearcherRepository,
+    private val filmsRepo: FilmSearcherRepository
     ): ViewModel() {
 
 
-    var filmsListLiveData = MutableLiveData<List<Film?>>()
+    var filmsListLiveData = MutableLiveData<List<Film>?>()
+    var liveData = filmsListLiveData.value
 
     private val apiErrorLiveData = MutableLiveData<String?>()
 
@@ -26,6 +28,8 @@ class MainActivityViewModel(
                 val response = filmsRepo.getFilmsFromAPI(expression)
                 if(response.isSuccessful) {
                     filmsListLiveData.postValue(response.body()?.results)
+                    Log.d("LOGGA"," from VM ${response.body()?.results}")
+                    Log.d("LOGGA"," from VM live ${filmsListLiveData.value}")
 
                 }
             } catch (e: UnknownHostException) {
@@ -35,7 +39,4 @@ class MainActivityViewModel(
             }
         }
     }
-
-
-
 }
