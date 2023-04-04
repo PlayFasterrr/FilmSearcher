@@ -12,15 +12,13 @@ interface FilmSearcherRepository {
 
     suspend fun getFilmWikiFromAPI(id: String): Response<WikiResponse>
 
-    suspend fun insertFilmsToDB(films: List<Film>): Boolean
+    suspend fun insertFilmsToDB(films: List<Film>?): Boolean
 
-    suspend fun readFilmsFromDB(): ArrayList<FilmDB>
+    suspend fun readFilmsFromDB(): List<Film>
 
     suspend fun clearDB(): Boolean
 
-    suspend fun onClickFilm()
+    suspend fun toDBEntity(films: List<Film>?): List<FilmDB>
 
-    suspend  fun toDBEntity(films: MutableList<Film>): List<FilmDB>
-
-    suspend fun fromDBEntity(filmsDB : MutableList<FilmDB>): List<Film>
+    suspend fun fromDBEntity(filmsDB: List<FilmDB>): List<Film>
 }

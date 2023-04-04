@@ -12,7 +12,7 @@ import retrofit2.Response
 class FilmSearcherRepositoryImpl(
     private val apiService: FilmSearcherApiService,
     private val movieDao: FilmsDao
-): FilmSearcherRepository {
+) : FilmSearcherRepository {
 
     override suspend fun getFilmsFromAPI(expression: String): Response<SearchResponse> {
         return apiService.getFilms(expression)
@@ -22,39 +22,38 @@ class FilmSearcherRepositoryImpl(
         return apiService.getFilmWiki(id)
     }
 
-    override suspend fun insertFilmsToDB(films: List<Film>): Boolean {
-        movieDao.getLastMovies()
+    override suspend fun insertFilmsToDB(films: List<Film>?): Boolean {
+        movieDao.insertAllMovies(toDBEntity(films))
         return true
     }
 
-    override suspend fun readFilmsFromDB(): ArrayList<FilmDB> {
-        TODO("Not yet implemented")
+    override suspend fun readFilmsFromDB(): List<Film> {
+        return fromDBEntity(movieDao.getLastMovies())
     }
 
     override suspend fun clearDB(): Boolean {
-        TODO("Not yet implemented")
+        movieDao.deleteAll()
+        return true
     }
 
-    override suspend fun onClickFilm() {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun toDBEntity(films: MutableList<Film>): List<FilmDB> {
+    override suspend fun toDBEntity(films: List<Film>?): List<FilmDB> {
         val filmsDBList: MutableList<FilmDB> = mutableListOf()
-        for (item in films) {
-            val filmDB = FilmDB(
-                id = item.id ?: "1",
-                resultType = item.resultType ?: "",
-                image = item.image ?: "",
-                title = item.title ?: "",
-                description = item.description ?: ""
-            )
-            filmsDBList.add(filmDB)
+        if (films != null) {
+            for (item in films) {
+                val filmDB = FilmDB(
+                    id = item.id ?: "1",
+                    resultType = item.resultType ?: "",
+                    image = item.image ?: "",
+                    title = item.title ?: "",
+                    description = item.description ?: ""
+                )
+                filmsDBList.add(filmDB)
+            }
         }
         return filmsDBList.toList()
     }
 
-    override suspend fun fromDBEntity(filmsDB: MutableList<FilmDB>): List<Film> {
+    override suspend fun fromDBEntity(filmsDB: List<FilmDB>): List<Film> {
         val filmsList: MutableList<Film> = mutableListOf()
         for (item in filmsDB) {
             val film = Film(
@@ -68,13 +67,4 @@ class FilmSearcherRepositoryImpl(
         }
         return filmsList.toList()
     }
-
-//    override fun clickFilm(film: Film) {
-//        val intent = Intent(this, WikiActivity::class.java)
-//        intent.putExtra("id", film.id).putExtra("image", film.image)
-//        startActivity(intent)
-//    }
-
-
-
 }

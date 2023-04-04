@@ -1,6 +1,5 @@
 package com.example.filmsearcher.data.models
 
-import com.example.filmsearcher.data.room.entity.FilmDB
 import com.google.gson.annotations.SerializedName
 
 data class SearchResponse(

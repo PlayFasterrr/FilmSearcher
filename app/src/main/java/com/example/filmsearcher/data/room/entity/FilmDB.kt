@@ -3,7 +3,6 @@ package com.example.filmsearcher.data.room.entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-
 @androidx.room.Entity("films")
 data class FilmDB(
 
