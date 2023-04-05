@@ -3,26 +3,18 @@ package com.example.filmsearcher.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.filmsearcher.R
-import com.example.filmsearcher.data.repository.FilmSearcherRepositoryImpl
-import com.example.filmsearcher.data.room.dataBase.FilmsDataBase
 import com.example.filmsearcher.databinding.ActivityWikiBinding
-import com.example.filmsearcher.domain.repository.FilmSearcherApiService
 import com.squareup.picasso.Picasso
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class WikiActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWikiBinding
+    private val viewModel by viewModel<WikiActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWikiBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val myDB = FilmsDataBase.getDB(this@WikiActivity)
-        val viewModel = WikiActivityViewModel(
-            FilmSearcherRepositoryImpl(
-                FilmSearcherApiService.create(),
-                myDB.movieDao()
-            )
-        )
 
         val request = intent.getStringExtra("id") ?: "terrible mistake"
         var image = intent.getStringExtra("image")

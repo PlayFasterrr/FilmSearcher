@@ -8,28 +8,20 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.filmsearcher.data.models.Film
 import com.example.filmsearcher.data.repository.FilmAdapter
-import com.example.filmsearcher.data.repository.FilmSearcherRepositoryImpl
-import com.example.filmsearcher.data.room.dataBase.FilmsDataBase.Companion.getDB
 import com.example.filmsearcher.databinding.ActivityMainBinding
 import com.example.filmsearcher.domain.repository.FilmClicker
-import com.example.filmsearcher.domain.repository.FilmSearcherApiService
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity(), FilmClicker {
 
     private lateinit var binding: ActivityMainBinding
     private var adapter = FilmAdapter(this)
+    private val viewModel by viewModel<MainActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val myDB = getDB(this@MainActivity)
-        val viewModel = MainActivityViewModel(
-            FilmSearcherRepositoryImpl(
-                FilmSearcherApiService.create(),
-                myDB.movieDao()
-            )
-        )
 
         if (!viewModel.checkInternetConnection(this)) viewModel.drawFromDB()
 
